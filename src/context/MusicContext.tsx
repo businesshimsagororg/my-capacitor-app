@@ -1,4 +1,5 @@
 import * as musicMetadata from "music-metadata-browser";
+import { Capacitor } from "@capacitor/core";
 import React, {
 	createContext,
 	useContext,
@@ -668,8 +669,14 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		}
 	};
 
+	const isNative = () => Capacitor.isNativePlatform();
+
 	const importYoutubeUrl = async (url: string) => {
 		if (!url) return;
+		if (isNative()) {
+			showIsland("Stand-alone App", "YouTube import is server-only. Run on Web to import.", "⚠️");
+			return;
+		}
 		try {
 			showIsland("YouTube", "Fetching details…", "🌐");
 

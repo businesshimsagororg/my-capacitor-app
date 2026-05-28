@@ -4,6 +4,12 @@ const config: CapacitorConfig = {
 	appId: "com.zmusic.app",
 	appName: "zmusic",
 	webDir: "dist",
+	ios: {
+		allowsInlineMediaPlayback: true,
+		backgroundColor: "#000000",
+		scheme: "zmusic",
+		contentInset: "always",
+	},
 };
 
 export default config;

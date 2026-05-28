@@ -7,12 +7,17 @@
 		"dev": "tsx server.ts",
 		"build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
 		"start": "node dist/server.cjs",
-		"lint": "biome check . && tsc --noEmit"
+		"lint": "biome check . && tsc --noEmit",
+		"cap:build": "npm run build && npx cap sync ios",
+		"cap:open": "npx cap open ios"
 	},
 	"dependencies": {
 		"@aparajita/capacitor-biometric-auth": "^10.0.0",
 		"@capacitor/core": "^8.3.4",
+		"@capacitor/haptics": "^8.0.2",
 		"@capacitor/ios": "^8.3.4",
+		"@capacitor/splash-screen": "^8.0.1",
+		"@capacitor/status-bar": "^8.0.2",
 		"@tailwindcss/vite": "^4.1.14",
 		"@vitejs/plugin-react": "^5.0.4",
 		"cors": "^2.8.6",
@@ -23,7 +28,6 @@
 		"music-metadata-browser": "^2.5.11",
 		"react": "^19.0.1",
 		"react-dom": "^19.0.1",
-		"recharts": "^3.8.1",
 		"tsx": "^4.22.3",
 		"yt-dlp-wrap": "^2.3.12"
 	},

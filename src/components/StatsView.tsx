@@ -8,18 +8,7 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import type React from "react";
-import { useMemo } from "react";
-import {
-	Bar,
-	BarChart,
-	Cell,
-	Pie,
-	PieChart,
-	ResponsiveContainer,
-	Tooltip,
-	XAxis,
-	YAxis,
-} from "recharts";
+import { useMemo, useEffect, useRef } from "react";
 import { useMusic } from "../context/MusicContext";
 import {
 	getAccentBg20Class,
@@ -28,6 +17,120 @@ import {
 	getAccentColor,
 	getAccentTextClass,
 } from "../utils/themeUtils";
+
+// Lightweight canvas-based Bar Chart replacement
+const CanvasBarChart: React.FC<{ data: { name: string; value: number }[]; color: string }> = ({ data, color }) => {
+	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+
+		// Handle high-DPI displays
+		const dpr = window.devicePixelRatio || 1;
+		const rect = canvas.getBoundingClientRect();
+		canvas.width = rect.width * dpr;
+		canvas.height = rect.height * dpr;
+		ctx.scale(dpr, dpr);
+
+		const width = rect.width;
+		const height = rect.height;
+
+		ctx.clearRect(0, 0, width, height);
+
+		if (data.length === 0) return;
+
+		const maxValue = Math.max(...data.map(d => d.value), 1);
+		const barWidth = Math.floor((width - (data.length - 1) * 12) / data.length);
+		const paddingBottom = 24;
+		const chartHeight = height - paddingBottom - 10;
+
+		data.forEach((item, index) => {
+			const barHeight = (item.value / maxValue) * chartHeight;
+			const x = index * (barWidth + 12);
+			const y = height - paddingBottom - barHeight;
+
+			// Draw rounded bar
+			ctx.fillStyle = color;
+			ctx.globalAlpha = 0.4 + (index / data.length) * 0.6;
+			ctx.beginPath();
+			ctx.roundRect(x, y, barWidth, barHeight, [4, 4, 0, 0]);
+			ctx.fill();
+
+			// Draw label
+			ctx.globalAlpha = 1.0;
+			ctx.fillStyle = "#888888";
+			ctx.font = "10px sans-serif";
+			ctx.textAlign = "center";
+			ctx.fillText(item.name, x + barWidth / 2, height - 8, barWidth);
+		});
+	}, [data, color]);
+
+	return <canvas ref={canvasRef} className="w-full h-full" />;
+};
+
+// Lightweight canvas-based Pie/Donut Chart replacement
+const CanvasPieChart: React.FC<{ data: { name: string; value: number }[]; color: string }> = ({ data, color }) => {
+	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+
+		const dpr = window.devicePixelRatio || 1;
+		const rect = canvas.getBoundingClientRect();
+		canvas.width = rect.width * dpr;
+		canvas.height = rect.height * dpr;
+		ctx.scale(dpr, dpr);
+
+		const width = rect.width;
+		const height = rect.height;
+		const centerX = width / 2;
+		const centerY = height / 2;
+		const outerRadius = Math.min(width, height) / 2 - 10;
+		const innerRadius = outerRadius - 20;
+
+		ctx.clearRect(0, 0, width, height);
+
+		if (data.length === 0) return;
+
+		const total = data.reduce((sum, d) => sum + d.value, 0);
+		let startAngle = -Math.PI / 2;
+
+		data.forEach((item, index) => {
+			const sliceAngle = (item.value / total) * 2 * Math.PI;
+
+			// Draw slice segment
+			ctx.fillStyle = color;
+			ctx.globalAlpha = 1 - index * 0.15;
+			ctx.beginPath();
+			ctx.arc(centerX, centerY, outerRadius, startAngle, startAngle + sliceAngle);
+			ctx.arc(centerX, centerY, innerRadius, startAngle + sliceAngle, startAngle, true);
+			ctx.closePath();
+			ctx.fill();
+
+			// Draw legend / label at center of segment if space permits
+			const middleAngle = startAngle + sliceAngle / 2;
+			const labelX = centerX + (outerRadius + 14) * Math.cos(middleAngle);
+			const labelY = centerY + (outerRadius + 14) * Math.sin(middleAngle);
+
+			ctx.globalAlpha = 1.0;
+			ctx.fillStyle = "#aaaaaa";
+			ctx.font = "9px sans-serif";
+			ctx.textAlign = Math.cos(middleAngle) > 0 ? "left" : "right";
+			ctx.textBaseline = "middle";
+			ctx.fillText(`${item.name} (${item.value})`, labelX, labelY);
+
+			startAngle += sliceAngle;
+		});
+	}, [data, color]);
+
+	return <canvas ref={canvasRef} className="w-full h-full" />;
+};
 
 export const StatsView: React.FC = () => {
 	const { tracks, settings } = useMusic();
@@ -136,37 +239,7 @@ export const StatsView: React.FC = () => {
 					</div>
 					<div className="flex-1 w-full min-h-0">
 						{stats.genreData.length > 0 ? (
-							<ResponsiveContainer width="100%" height="100%">
-								<BarChart data={stats.genreData}>
-									<XAxis
-										dataKey="name"
-										stroke="#444"
-										fontSize={10}
-										tickLine={false}
-										axisLine={false}
-									/>
-									<YAxis hide />
-									<Tooltip
-										contentStyle={{
-											backgroundColor: "#000",
-											borderColor: "#222",
-											borderRadius: "12px",
-											fontSize: "12px",
-										}}
-									/>
-									<Bar dataKey="value" radius={[4, 4, 0, 0]}>
-										{stats.genreData.map((_entry, index) => (
-											<Cell
-												key={`cell-${index}`}
-												fill={accentColor}
-												fillOpacity={
-													0.4 + (index / stats.genreData.length) * 0.6
-												}
-											/>
-										))}
-									</Bar>
-								</BarChart>
-							</ResponsiveContainer>
+							<CanvasBarChart data={stats.genreData} color={accentColor} />
 						) : (
 							<div className="flex items-center justify-center h-full text-neutral-600 text-xs">
 								{lang === "bn" ? "কোন ডেটা নেই" : "No data available"}
@@ -185,33 +258,7 @@ export const StatsView: React.FC = () => {
 					</div>
 					<div className="flex-1 w-full min-h-0">
 						{stats.moodData.length > 0 ? (
-							<ResponsiveContainer width="100%" height="100%">
-								<PieChart>
-									<Tooltip
-										contentStyle={{
-											backgroundColor: "#000",
-											borderColor: "#222",
-											borderRadius: "12px",
-											fontSize: "12px",
-										}}
-									/>
-									<Pie
-										data={stats.moodData}
-										innerRadius={60}
-										outerRadius={80}
-										paddingAngle={5}
-										dataKey="value"
-									>
-										{stats.moodData.map((_entry, index) => (
-											<Cell
-												key={`cell-${index}`}
-												fill={accentColor}
-												fillOpacity={1 - index * 0.2}
-											/>
-										))}
-									</Pie>
-								</PieChart>
-							</ResponsiveContainer>
+							<CanvasPieChart data={stats.moodData} color={accentColor} />
 						) : (
 							<div className="flex items-center justify-center h-full text-neutral-600 text-xs">
 								{lang === "bn" ? "কোন ডেটা নেই" : "No data available"}
