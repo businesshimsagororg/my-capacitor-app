@@ -1,0 +1,103 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap");
+@import "tailwindcss";
+
+@property --accent-color {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: #10b981;
+}
+
+:root {
+	--accent-color: #10b981;
+	transition: --accent-color 0.3s ease;
+}
+
+@theme {
+  --font-sans: "Outfit", "Noto Sans Bengali", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@utility squircle {
+  border-radius: 24%;
+}
+
+@utility glass-ios {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@utility neural-shadow {
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Convoluted Webkit Sliders Styling for Equalizer */
+.vertical-slider {
+	-webkit-appearance: none;
+	writing-mode: bt-lr; /* IE */
+	-webkit-writing-mode: vertical-lr; /* Webkit */
+	direction: rtl;
+	width: 6px;
+	background: #171717;
+	border-radius: 9999px;
+	outline: none;
+}
+
+.vertical-slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: #3b82f6;
+	border: 2px solid #ffffff;
+	box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+	cursor: pointer;
+}
+
+.vertical-slider::-moz-range-thumb {
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: #3b82f6;
+	border: 2px solid #ffffff;
+	box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+	cursor: pointer;
+}
+
+/* Conceal browser scrollbars for fluid horizontal lists */
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+.no-scrollbar {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
+
+@keyframes spin-slow {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+.animate-spin-slow {
+	animation: spin-slow 12s linear infinite;
+}
+
+@keyframes shake {
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+	25% {
+		transform: translateX(-4px);
+	}
+	75% {
+		transform: translateX(4px);
+	}
+}
+.animate-shake {
+	animation: shake 0.25s ease-in-out 2;
+}
