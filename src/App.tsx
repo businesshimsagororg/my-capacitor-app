@@ -13,8 +13,10 @@ import { SettingsView } from "./components/SettingsView";
 import { SideMenu } from "./components/SideMenu";
 import { StatsView } from "./components/StatsView";
 import { MusicProvider, useMusic } from "./context/MusicContext";
+import { useLockScreenControls } from "./hooks/useLockScreenControls";
 
 function MainAppShell() {
+	useLockScreenControls();
 	const { activeTab, togglePlay, nextTrack, prevTrack, setVolume, settings } =
 		useMusic();
 
