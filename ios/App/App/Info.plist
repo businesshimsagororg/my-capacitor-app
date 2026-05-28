@@ -53,5 +53,11 @@
 	</array>
 	<key>NSFaceIDUsageDescription</key>
 	<string>This app uses Face ID to unlock the private folder.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>ZMusic needs access to your music library</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>ZMusic needs microphone access for audio features</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access for Face ID authentication.</string>
 </dict>
 </plist>

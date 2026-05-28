@@ -8,7 +8,7 @@ const config: CapacitorConfig = {
 		allowsInlineMediaPlayback: true,
 		backgroundColor: "#000000",
 		scheme: "zmusic",
-		contentInset: "always",
+		contentInset: "automatic",
 	},
 };
 

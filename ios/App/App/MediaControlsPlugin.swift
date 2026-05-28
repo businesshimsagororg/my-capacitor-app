@@ -3,7 +3,7 @@ import Capacitor
 import MediaPlayer
 
 @objc(MediaControlsPlugin)
-public class MediaControlsPlugin: CAPPlugin, CAPBridge {
+public class MediaControlsPlugin: CAPPlugin {
     private var isRegistered = false
 
     @objc func updateNowPlaying(_ call: CAPPluginCall) {
