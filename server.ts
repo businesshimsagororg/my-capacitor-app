@@ -11,7 +11,7 @@ async function startServer() {
 	const app = express();
 	const PORT = 3000;
 
-	app.use(cors());
+	app.use(cors({ origin: ['zmusic://', 'http://localhost:5173'] }));
 	app.use(express.json());
 
 	// --- Info endpoint ---
