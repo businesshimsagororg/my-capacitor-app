@@ -47,6 +47,7 @@ class AudioEngine {
 	private silenceDurationMs: number = 0;
 
 	private adaptiveCompressor: DynamicsCompressorNode | null = null;
+	private _isSpatialEnabled: boolean = false;
 	private _isAdaptiveAudioEnabled: boolean = false;
 	private isInitializing: boolean = false;
 

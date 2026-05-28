@@ -1,8 +1,5 @@
 import React from "react";
 import { useState } from "react";
-import { createServer as createViteServer } from "vite";
-
-const { YTDlpWrap } = require("yt-dlp-wrap");
 import type { ThemeAccent } from "../types";
 import { getAccentBgClass, getAccentTextClass } from "../utils/themeUtils";
 import { authenticateWithBiometrics } from "../hooks/useBiometricAuth";
