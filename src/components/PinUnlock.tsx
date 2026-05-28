@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import { useState } from "react";
 import { createServer as createViteServer } from "vite";
 
@@ -49,6 +49,6 @@ export const PinUnlock: React.FC<PinUnlockProps> = ({
 					</div>
 				</div>
 			</div>
-		</div>
+
 	);
 };
