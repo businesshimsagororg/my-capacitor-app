@@ -20,21 +20,25 @@ public class MediaControlsPlugin: CAPPlugin {
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = currentTime
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
 
-        if !artworkUrl.isEmpty {
-            if let url = URL(string: artworkUrl), let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+        // Perform artwork fetch asynchronously and update now playing info after fetch
+        DispatchQueue.global().async {
+            if !artworkUrl.isEmpty,
+               let url = URL(string: artworkUrl),
+               let data = try? Data(contentsOf: url),
+               let image = UIImage(data: data) {
                 let artwork = MPMediaItemArtwork(boundsSize: image.size) { _ in image }
                 nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
             }
+            // Update MPNowPlayingInfoCenter and resolve on the main thread
+            DispatchQueue.main.async {
+                MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+                if !self.isRegistered {
+                    self.setupRemoteCommands()
+                    self.isRegistered = true
+                }
+                call.resolve()
+            }
         }
-
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-
-        if !isRegistered {
-            setupRemoteCommands()
-            isRegistered = true
-        }
-
-        call.resolve()
     }
 
     private func setupRemoteCommands() {
