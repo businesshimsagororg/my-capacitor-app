@@ -17,7 +17,7 @@ export const useLockScreenControls = () => {
 			duration: duration || currentTrack.duration || 0,
 			currentTime: currentTime || 0,
 		});
-	}, [currentTrack, currentTime, duration, isPlaying]);
+	}, [currentTrack, duration, isPlaying]);
 
 	// Register OS-level lock screen commands (play, pause, skip buttons)
 	useEffect(() => {
