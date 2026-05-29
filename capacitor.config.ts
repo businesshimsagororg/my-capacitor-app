@@ -8,7 +8,7 @@ const config: CapacitorConfig = {
 		allowsInlineMediaPlayback: true,
 		backgroundColor: "#000000",
 		scheme: "zmusic",
-		contentInset: "automatic",
+		allowNavigation: ["http://localhost:5173"],
 	},
 };
 

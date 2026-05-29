@@ -317,7 +317,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			});
 			audioEngine.cleanup();
 		};
-	}, [state.tracks.forEach]);
+	}, []);
 
 	useEffect(() => {
 		const refreshSmartPlaylists = async () => {
@@ -360,7 +360,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		};
 
 		refreshSmartPlaylists();
-	}, [state.playlists, state.tracks.length, state.tracks.filter]);
+	}, [state.playlists, state.tracks.length]);
 
 	useEffect(() => {
 		if (!state.currentTrack || !("mediaSession" in navigator)) return;

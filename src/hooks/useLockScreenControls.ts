@@ -23,7 +23,7 @@ export const useLockScreenControls = () => {
 	useEffect(() => {
 		if (!Capacitor.isNativePlatform()) return;
 
-		onRemoteCommand((command) => {
+		const unregister = onRemoteCommand((command) => {
 			switch (command) {
 				case "play":
 					if (!isPlaying) togglePlay();
@@ -39,5 +39,8 @@ export const useLockScreenControls = () => {
 					break;
 			}
 		});
+		return () => {
+			if (unregister) unregister();
+		};
 	}, [isPlaying, togglePlay, nextTrack, prevTrack]);
 };

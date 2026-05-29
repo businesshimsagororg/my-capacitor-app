@@ -55,6 +55,6 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>ZMusic needs microphone access for audio features</string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app needs camera access for Face ID authentication.</string>
+	<string>Used for audio visualizer and import features.</string>
 </dict>
 </plist>
